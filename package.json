@@ -1,0 +1,17 @@
+{
+  "name": "graphql-front",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.6"
+  },
+  "dependencies": {
+    "js-cookies": "^1.0.4"
+  }
+}
