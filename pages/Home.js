@@ -3,8 +3,8 @@ import noheart from "../assets/unliked.svg";
 import heart from "../assets/liked.svg";
 import imgupload from "../assets/imageupload.svg";
 import hashtag from "../assets/hashtag.svg";
-import { OrgIndexPosts } from "../funcs/posts";
-import { convertImageToBase64 } from "../funcs/utils";
+// import { OrgIndexPosts } from "../funcs/posts";
+// import { convertImageToBase64 } from "../funcs/utils";
 
 export const Home = async () => {
   if (!sessionStorage.getItem("user_token")) {

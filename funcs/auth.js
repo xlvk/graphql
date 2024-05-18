@@ -1,5 +1,5 @@
 
-import { EncodeBase64Image, SetSessionStorage } from "./utils";
+// import { EncodeBase64Image, SetSessionStorage } from "./utils";
 
 /**
  * Validates signup form data
