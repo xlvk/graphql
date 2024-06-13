@@ -17,7 +17,7 @@ export const Login = () => {
   <div class="container_sign__form container_sign--signin">
       <form action="#" class="form" id="form2">
           <h2 class="form__title">Sign In</h2>
-          <input type="email" placeholder="Email" class="input" id="email"/>
+          <input type="email" placeholder="Email/Username" class="input" id="email"/>
           <input type="password" placeholder="Password" class="input" id="password"/>
           <a href="#" class="link">Forgot your password?</a>
           <button class="btn" id="signInPale" method="POST" onSubmit={Auth}>Sign In</button>

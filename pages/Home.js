@@ -1,8 +1,9 @@
 import { LoadNav } from "../funcs/navbar";
-import noheart from "../assets/unliked.svg";
-import heart from "../assets/liked.svg";
-import imgupload from "../assets/imageupload.svg";
-import hashtag from "../assets/hashtag.svg";
+import user from "../assets/user2.png";
+// import noheart from "../assets/unliked.svg";
+// import heart from "../assets/liked.svg";
+// import imgupload from "../assets/imageupload.svg";
+// import hashtag from "../assets/hashtag.svg";
 // import { OrgIndexPosts } from "../funcs/posts";
 // import { convertImageToBase64 } from "../funcs/utils";
 
