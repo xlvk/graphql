@@ -1,14 +1,15 @@
 import { LoadNav, navBarItems } from "../funcs/navbar";
 import * as d3 from 'd3';
 import { Alphabet } from "../funcs/MyAlphabet";
-import { Chart, DoughnutController, ArcElement, CategoryScale, Tooltip, Legend } from 'chart.js';
+import { Chart, BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 
 
-/**
+
+/**@
  * This function fetches the profile page
  */
 
-Chart.register(DoughnutController, ArcElement, CategoryScale, Tooltip, Legend);
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 export const Profile = async () => {
   // check if the user is logged in.
   const VAriableName = localStorage.getItem("jwt");
@@ -34,7 +35,7 @@ export const Profile = async () => {
 
       </div>
       <div class="reviews">
-        <h1>Past Event Reviews</h1>
+        <h1 id="wlcoming"></h1>
         <div class="review-container">
           <div class="card review-card">
             <h2>Total XP:</h2>
@@ -49,7 +50,7 @@ export const Profile = async () => {
           </div>
 
           <div class="card review-card">
-            <h2>Electro Groove Night</h2>
+            <h2>The TimeLine:</h2>
             <script src="https://d3js.org/d3.v7.min.js" async></script>
       <div id="timeline-container">
         <svg id="timeline"></svg>
@@ -57,12 +58,8 @@ export const Profile = async () => {
           </div>
 
           <div class="card review-card">
-            <h2>Wimbledon Championships - 2023 (Final)</h2>
-            <p>
-              Watching the Wimbledon final between Novak Djokovic and Carlos
-              Alcaraz was so exciting! The intense match and incredible skills
-              of the players made it a thrilling experience that I'll always
-              remember.
+            <h2>your level</h2>
+            <p id="level">
             </p>
           </div>
         </div>
@@ -189,9 +186,9 @@ export function createTimeline(thicc, smoll, data) {
   endDate.setHours(0, 0, 0, 0);
 
   // set the margins and width and height of the timeline
-  const margin = { top: 10, right: 40, bottom: 30, left: 40 },
-    width = thicc - margin.left - margin.right - 100,
-    height = smoll - margin.top - margin.bottom - 40;
+  const margin = { top: 20, right: 40, bottom: 40, left: 60 },
+    width = thicc - margin.left - margin.right,
+    height = smoll - margin.top - margin.bottom;
 
   // create a new svg element with the width and height of the timeline-container
   const svg = d3
@@ -342,9 +339,92 @@ export function displayUserXp(xpAmount, upAmount, downAmount) {
   }
 
   // Display the user XP ratio
+  if (totalXpElement) {
+    totalXpElement.textContent = ` ${convertToByteUnits(xpAmount)}`;
+  }
+
+  // Display the user XP ratio
   let xpRatioElement = document.getElementById("xpRatio");
   if (xpRatioElement) {
-    xpRatioElement.textContent = (upAmount / downAmount).toFixed(2);
+    const auditRatio = (upAmount / downAmount);
+  
+    // Remove any existing canvas or SVG elements
+    xpRatioElement.innerHTML = '';
+  
+    const width = 250; // increased width
+    // const rect = xpRatioElement.getBoundingClientRect();
+    // const width = rect.width; // Use the full width of the xpRatio element
+    const height = 100; // increased height
+    const margin = { top: 40, right: 40, bottom: 50, left: 100 }; // increased margins
+  
+    const svg = d3
+      .select("#xpRatio")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+  
+    const x = d3.scaleLinear().range([0, width]);
+    const y = d3.scaleBand().range([0, height]).padding(0.3);
+  
+    const data = [
+      { label: 'Received XP', value: downAmount },
+      { label: 'Given XP', value: upAmount },
+    ];
+  
+    x.domain([0, d3.max(data, (d) => d.value)]);
+    y.domain(data.map((d) => d.label)).padding(0.1);
+  
+    svg
+      .append("g")
+      .call(d3.axisLeft(y))
+      .selectAll("text")
+      .attr("transform", "rotate(-45)")
+      .style("text-anchor", "end")
+      .attr("dx", "-0.8em")
+      .attr("dy", "0.15em");
+  
+    svg.append("g")
+      .attr("transform", `translate(0, ${height})`) // move x-axis to the bottom
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .attr("transform", "rotate(-90)")  // rotate the text
+      .style("text-anchor", "end")
+      .attr("dx", "-0.8em")
+      .attr("dy", "-0.5em");
+  
+    svg
+      .selectAll(".bar")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", 0)
+      .attr("y", (d) => y(d.label))
+      .attr("width", (d) => x(d.value))
+      .attr("height", y.bandwidth())
+      .attr("fill", (d, i) => (i === 0 ? "rgba(54, 162, 235, 0.2)" : "rgba(255, 99, 132, 0.2)"))
+      .on("mouseover", function(event, d) {
+        d3.select(this).attr("fill", (d, i) => (i === 0 ? "rgb(54, 162, 235)" : "rgb(255, 99, 132)"));
+      })
+      .on("mouseout", function(event, d) {
+        d3.select(this).attr("fill", (d, i) => (i === 0 ? "rgba(54, 162, 235, 0.2)" : "rgba(255, 99, 132, 0.2)"));
+      });
+  
+    // Add a title
+    svg.append("text")
+      .attr("x", width / 2)
+      .attr("y", -margin.top / 2)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("text-decoration", "underline")
+      .text("XP Ratio");
+  
+    // Display the audit ratio
+    const auditRatioElement = document.createElement('p');
+    auditRatioElement.textContent = `Audit Ratio: ${auditRatio.toFixed(2)}`;
+    xpRatioElement.appendChild(auditRatioElement);
   }
 
   // Display the user given XP
@@ -373,7 +453,7 @@ export function displayUserXp(xpAmount, upAmount, downAmount) {
   }
 }
 
-export function displayUserInfo(user) {
+export async function displayUserInfo(user) {
   console.log("Displaying user info...");
   console.log(user);
   console.log(user.attrs.PhoneNumber);
@@ -411,6 +491,12 @@ export function displayUserInfo(user) {
     firstNameLastNameElement.textContent = ` ${user.attrs.firstName} ${user.attrs.lastName}`;
   }
 
+    // Set the user first name and last name
+    let LoginInUserElement = document.getElementById("wlcoming");
+    if (LoginInUserElement) {
+      LoginInUserElement.textContent = `welcome ${user.login}!`;
+    }
+
   // Set the user campus
   let campusElement = document.getElementById("campus");
   if (campusElement) {
@@ -424,6 +510,47 @@ export function displayUserInfo(user) {
   let fromElement = document.getElementById("from");
   if (fromElement) {
     fromElement.textContent = `${calculateAge(user.attrs.dateOfBirth)} Years old from ${user.attrs.country}`;
+  }
+
+  const userLevel = await fetchUserLevel(user.login);
+  console.log("User level2:", userLevel);
+  const levelText = displayUserLevel(userLevel);
+
+    // Set the user level
+    let levelElement = document.getElementById("level");
+    if (levelElement) {
+      levelElement.textContent = levelText;
+    }
+}
+
+
+export async function fetchUserLevel(userLogin) {
+  console.log("Fetching user level...");
+  try {
+    const response = await fetch(Alphabet.A + "api/graphql-engine/v1/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({
+        query: Alphabet.H,
+        variables: { userlogin: userLogin },
+      }),
+    });
+
+    const data = await response.json();
+    console.log("Data:", data);
+    if (response.ok) {
+      const userLevel = data.data.event_user[0].level;
+      console.log("User level:", userLevel);
+      return userLevel;
+    } else {
+      throw new Error(`GraphQL error: ${data.errors[0].message}`);
+    }
+  } catch (error) {
+    console.error("Error fetching user level:", error);
+    return null; // Return null in case of an error
   }
 }
 

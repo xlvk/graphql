@@ -152,9 +152,48 @@ export const Alphabet = {
     }
   }
   `,
-  L: "",
-  M: "",
-  N: "",
+  /**
+ * to every project and what's needed to open it.
+ */
+  L: `
+  query get_child_for_edit {
+	object_child(where: {parent:{name:{_eq:"Module"}} }) {
+		child{
+  		name
+		}
+  	baseReq:attrs(path:"baseSkills")
+  	requirements: attrs(path:"requirements")
+	}
+}
+  `,
+  /**
+  * get the state of the user in the program
+  */
+  M: `
+  query DevStaute {
+  object(where:{name:{_eq:"Module"}}){
+    attrs
+  }
+}
+  `,
+  /**
+   * this is the query for the timeline graph that will be user later for one of the new added pages.
+   * 
+  */
+  N: `
+    query timeline_graph {
+      user {
+        login
+        timeline: transactions(
+          where: {type: {_eq: "xp"}, _or: [{attrs: {_eq: {}}}, {attrs: {_has_key: "group"}}], _and: [{path: {_nlike: "%/piscine-js/%"}}, {path: {_nlike: "%/piscine-go/%"}}]}
+        ) {
+          amount
+          createdAt
+          path
+        }
+      }
+    }
+  `,
   O: "",
   P: "",
   Q: "",
