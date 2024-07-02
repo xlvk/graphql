@@ -3,11 +3,13 @@ import { Login } from "../pages/auth/login";
 import { Profile } from "../pages/profile";
 import { Logout } from "./logout";
 import { UpdateCSS } from "./funcs";
+import { TimeLine } from "../pages/timeline";
 // import { Graph } from "../pages/graphiql.jsx";
 
 const routes = {
   "/profile": { component: Profile, stylesheet: "/css/profile.css" },
   "/login": { component: Login, stylesheet: "/css/sign.css" },
+  "/timeline": { component: TimeLine, stylesheet: "/css/timeline.css" },
   // "/graphiql": { component: Graph, stylesheet: "/css/index.css" },
   "/": { component: Home, stylesheet: "/css/index.css" },
 };

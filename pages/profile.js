@@ -52,9 +52,9 @@ export const Profile = async () => {
           <div class="card review-card">
             <h2>The TimeLine:</h2>
             <script src="https://d3js.org/d3.v7.min.js" async></script>
-      <div id="timeline-container">
+<!--       <div id="timeline-container">
         <svg id="timeline"></svg>
-      </div>
+      </div> -->
           </div>
 
           <div class="card review-card">
