@@ -229,7 +229,7 @@ body {
 /* HEADER */
 
 .header {
-  margin: 0 auto;
+  margin: 0 auto 1.5rem auto;
   width: 100%;
 }
 
@@ -458,7 +458,7 @@ body {
 }
 
 .review-card h2 {
-  margin-bottom: 8px;
+  margin-bottom: 20px;
 }
 
 .review-card p {
@@ -1012,6 +1012,89 @@ body::-webkit-scrollbar-thumb {
   pointer-events: none;
 }
 
+/* the css of the graph info */
+.legend {
+  width: 100%;
+  max-height: 100px;
+  overflow-y: auto;
+  /* border: 1px solid #ccc; */
+  padding: 0 50px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+  display: inline-block;
+}
+
+.legend-label {
+  display: inline-block;
+}
+
+/* try */
+.project-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.project-item span {
+  margin-right: 10px;
+}
+
+.checkpoint-btn, .project-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  color: white;
+}
+
+.checkpoint-btn {
+  background-color: #ff6b6b;
+}
+
+.project-btn {
+  background-color: #4ecdc4;
+}
+
+/* the css for the timeline */
+#timeline-container {
+  height: 240px;
+  overflow: scroll;
+}
+
+.tooltip {
+  position: absolute;
+  background: #fff;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.auto {
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+/* the extra css for the graphs */
+.graph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 /* commented css */
 /* 
