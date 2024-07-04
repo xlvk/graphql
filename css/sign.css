@@ -2,8 +2,8 @@
 	/* COLORS */
 	--white: #e9e9e9;
 	--gray: #333;
-	--blue: #0367a6;
-	--lightblue: #008997;
+	--blue: rgba(169, 150, 253);
+    --lightblue: rgb(116 87 242);
 
 	/* RADII */
 	--button-radius: 0.7rem;

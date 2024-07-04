@@ -37,8 +37,8 @@ export const Profile = async () => {
       <div class="reviews">
         <div class="review-container">
           <div class="card review-card">
-            <h2>Total XP:</h2>
-            <p id="total-xp">
+            <h2>Last Submitted Project:</h2>
+            <p id="last-submit">
             </p>
           </div>
           
@@ -49,7 +49,7 @@ export const Profile = async () => {
           </div>
 
           <div class="card review-card graph">
-            <h2>Audit Ratio:</h2>
+            <h2 id="display-ratio"></h2>
             <p id="xpRatio">
             </p>
           </div>
@@ -389,6 +389,11 @@ export function createTimeline(data) {
   data.data.user[0].timeline.sort(
     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
   );
+  // data = data.data.user[0].timeline.filter(item =>
+  //   item.path.startsWith('/bahrain/bh-module/') && item.path !== '/bahrain/bh-module/checkpoint'
+  // );
+  // numberOfPaths = filteredData.length;
+  // tempDataPath = filteredData;
 
   // Create a div for each project
   data.data.user[0].timeline.forEach(project => {
@@ -418,19 +423,8 @@ export function createTimeline(data) {
 }
 
 // Display the user XP and XP ratio in the DOM and generate the XP graph
-export function displayUserXp(xpAmount, upAmount, downAmount) {
+export function displayUserXp(upAmount, downAmount) {
   console.log("Displaying user xp...");
-
-  // Display the user XP
-  let totalXpElement = document.getElementById("total-xp");
-  if (totalXpElement) {
-    totalXpElement.textContent = ` ${convertToByteUnits(xpAmount)}`;
-  }
-
-  // Display the user XP ratio
-  if (totalXpElement) {
-    totalXpElement.textContent = ` ${convertToByteUnits(xpAmount)}`;
-  }
 
   // Display the user XP ratio
   let xpRatioElement = document.getElementById("xpRatio");
@@ -511,9 +505,14 @@ export function displayUserXp(xpAmount, upAmount, downAmount) {
     // .text("XP Ratio");
 
     // Display the audit ratio
-    const auditRatioElement = document.createElement('p');
-    auditRatioElement.textContent = `Audit Ratio: ${auditRatio.toFixed(2)}`;
-    xpRatioElement.appendChild(auditRatioElement);
+    // const auditRatioElement = document.createElement('p');
+    // auditRatioElement.textContent = `Audit Ratio: ${auditRatio.toFixed(2)}`;
+    // xpRatioElement.appendChild(auditRatioElement);
+  }
+
+  let xpRatioElementtxt = document.getElementById("disply-ratio");
+  if (xpRatioElementtxt) {
+    xpRatioElement.textContent = `Audit Ratio: ${auditRatio.toFixed(2)}`;
   }
 
   // Display the user given XP
@@ -654,7 +653,7 @@ export async function fetchSkillData() {
     if (response.ok && data.data && data.data.transaction) {
       const skillMap = new Map();
       const languageMap = new Map();
-      console.log(data.data.transaction);
+      // console.log(data.data.transaction);
 
       // Group skills by name and sum their values
       data.data.transaction.forEach(({ type, amount }) => {
@@ -670,7 +669,7 @@ export async function fetchSkillData() {
           if (existingValue > amount) {
             amount = existingValue;
           }
-          skillMap.set(skillName,  amount);
+          skillMap.set(skillName, amount);
         }
       });
 
@@ -907,16 +906,32 @@ export async function createGraph(VAriableName, query) {
     const user = data.data.user[0];
     displayUserInfo(user);
     displayUserXp(
-      user.xpAmount.aggregate.sum.amount,
       user.upAmount.aggregate.sum.amount,
       user.downAmount.aggregate.sum.amount
     );
+
 
     const filteredData = data.data.user[0].timeline.filter(item =>
       item.path.startsWith('/bahrain/bh-module/') && item.path !== '/bahrain/bh-module/checkpoint'
     );
     numberOfPaths = filteredData.length;
     tempDataPath = filteredData;
+
+    // Display the user XP
+    let lastSubmitProject = document.getElementById("last-submit");
+    if (lastSubmitProject) {
+      // Sort the tempDataPath array by createdAt date in ascending order
+      tempDataPath.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      
+      // Get the latest entry
+      const latestEntry = tempDataPath[tempDataPath.length - 1];
+
+      const cleanedPath = latestEntry.path.replace('/bahrain/bh-module/', '');
+
+      
+      // Update the text content with the path of the latest entry
+      lastSubmitProject.textContent = `${cleanedPath}`;
+    }
 
     // get the size of the timeline-container
     const timelineContainer = document.getElementById("timeline-container");
@@ -1115,7 +1130,8 @@ export async function myAudits(VAriableName) {
 
   const failedAudits = await fetchFailedAudits(VAriableName);
   const passedAudits = await fetchPassedAudits(VAriableName);
-
+  console.log("failedAudits:", failedAudits);
+  console.log("passedAudits:", passedAudits);
   const data = [
     { label: 'Failed Audits', value: failedAudits },
     { label: 'Passed Audits', value: passedAudits },
@@ -1150,7 +1166,7 @@ export async function myAudits(VAriableName) {
     .append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
-    .style("background", "#fff")
+    .style("background", "rgba(131, 135, 193, 0.4)")
     .style("padding", "5px 10px")
     .style("border", "1px solid #ccc")
     .style("border-radius", "5px")
@@ -1260,6 +1276,7 @@ export async function fetchFailedAudits(VAriableName) {
       body: JSON.stringify({ query: Alphabet.E }),
     });
     const data = await response.json();
+    console.log("Failed Audits:", data.data);
     return data.data.audit_aggregate.aggregate.count;
   } catch (error) {
     console.error("Error fetching failed audits:", error);
