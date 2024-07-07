@@ -2,10 +2,10 @@ import { LoadNav, navBarItems } from "../funcs/navbar";
 import * as d3 from 'd3';
 import { Alphabet } from "../funcs/MyAlphabet";
 import { Chart, BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+import { fetchSkillData, fetchUserLevel, fetchFailedAudits, fetchPassedAudits, fetchInProgressProjects } from "../funcs/fetch";
+import { getRandomColor } from "../funcs/funcs";
 
-
-
-/**@
+/**
  * This function fetches the profile page
  */
 
@@ -17,11 +17,6 @@ export const Profile = async () => {
     window.location.href = "/login";
     return;
   }
-  //     const VAriableName = localStorage.getItem("VAriableName");
-  //     if (!VAriableName) {
-  //       window.location.href = "/login.html";
-  //       return;
-  //     }
   document.body.innerHTML = `
   ${LoadNav()}
 <body>
@@ -32,7 +27,7 @@ export const Profile = async () => {
       </div>
 
       <div class="header">
-        <h1 id="wlcoming"></h1>
+        <h1 id="first-name-last-name"></h1>
       </div>
       <div class="reviews">
         <div class="review-container">
@@ -102,13 +97,13 @@ export const Profile = async () => {
         <div class="analytics-container">
           <div class="total-events">
             <div class="event-number card">
-              <h2>Past Events</h2>
+              <h2>Submitted Projects:</h2>
               <p id="past-event"></p>
               <i class="bx bx-check-circle"></i>
             </div>
             <div class="event-number card">
-              <h2>Upcoming Events</h2>
-              <p>3</p>
+              <h2>Projects in Progress: Events</h2>
+              <p id="in-proccess">3</p>
               <i class="bx bx-timer"></i>
             </div>
           </div>
@@ -175,252 +170,13 @@ export const Profile = async () => {
 }
     `;
 
-  console.log(query);
-
   //! create this function to create the graph and the Timeline for the user
   createGraph(VAriableName, query);
   await myAudits(VAriableName);
   mySkills();
+  await fetchInProgressProjects();
 
 };
-
-// export async function fetche(VAriableName, query) {
-//   try {
-//     const response = await fetch(
-//       Alphabet.A + "api/graphql-engine/v1/graphql",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${VAriableName}`,
-//         },
-//         body: JSON.stringify({ query }),
-//       }
-//     );
-
-//     const data = await response.json();
-//     if (!data.data.user || data.data.user.length === 0) {
-//       console.error("Error: data.data or data.data.user is undefined or empty.");
-//       return;
-//     }
-//     const user = data.data.user[0];
-//     displayUserInfo(user);
-//     createTimeline(data);
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//   }
-// }
-
-
-// export function createTimeline(thicc, smoll, data) {
-//   console.log("Creating timeline...");
-//   // remove the previous timeline
-//   d3.select("#timeline").selectAll("*").remove();
-//   d3.select(".tooltip").remove();
-
-//   // sort the timeline data by date
-//   data.data.user[0].timeline.sort(
-//     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-//   );
-//   // get the start and end date of the timeline
-//   const startDate = new Date(data.data.user[0].timeline[0].createdAt);
-//   const endDate = new Date(
-//     data.data.user[0].timeline[data.data.user[0].timeline.length - 1].createdAt
-//   );
-
-//   // set the start and end date to the first and last day of the month in order to get the correct width of the timeline
-//   startDate.setDate(1);
-//   startDate.setHours(0, 0, 0, 0);
-//   endDate.setDate(1);
-//   endDate.setMonth(endDate.getMonth() + 1);
-//   endDate.setHours(0, 0, 0, 0);
-
-//   // set the margins and width and height of the timeline
-//   const margin = { top: 20, right: 40, bottom: 40, left: 60 },
-//     width = thicc - margin.left - margin.right,
-//     height = smoll - margin.top - margin.bottom;
-
-//   // create a new svg element with the width and height of the timeline-container
-//   const svg = d3
-//     .select("#timeline")
-//     .attr("width", width + margin.left + margin.right)
-//     .attr("height", height + margin.top + margin.bottom)
-//     .append("g")
-//     .attr("transform", `translate(${margin.left},${margin.top})`);
-
-//   const x = d3.scaleTime().domain([startDate, endDate]).range([0, width]);
-//   if (thicc < 800 && thicc > 600) {
-//     svg
-//       .append("g")
-//       .attr("transform", `translate(0, ${height})`)
-//       .call(
-//         d3
-//           .axisBottom(x)
-//           .ticks(d3.timeMonth.every(1))
-//           .tickFormat(d3.timeFormat("%b %Y"))
-//       );
-//   } else if (thicc < 600 && thicc >= 500) {
-//     svg
-//       .append("g")
-//       .attr("transform", `translate(0, ${height})`)
-//       .call(
-//         d3
-//           .axisBottom(x)
-//           .ticks(d3.timeMonth.every(1))
-//           .tickFormat(d3.timeFormat("%b %y"))
-//       );
-//   } else if (thicc < 500 && thicc > 0) {
-//     svg
-//       .append("g")
-//       .attr("transform", `translate(0, ${height})`)
-//       .call(
-//         d3
-//           .axisBottom(x)
-//           .ticks(d3.timeMonth.every(1))
-//           .tickFormat(d3.timeFormat("%b"))
-//       );
-//   } else {
-//     svg
-//       .append("g")
-//       .attr("transform", `translate(0, ${height})`)
-//       .call(
-//         d3
-//           .axisBottom(x)
-//           .ticks(d3.timeMonth.every(1))
-//           .tickFormat(d3.timeFormat("%B %Y"))
-//       );
-//   }
-
-//   const tooltip = d3
-//     .select("body")
-//     .append("div")
-//     .attr("class", "tooltip")
-//     .style("opacity", 0)
-//     .style("left", "50%") // Set initial left position
-//     .style("top", "0"); // Set initial top position
-
-//   const mergeOverlappingDots = (data) => {
-//     let mergedData = [];
-//     let tempData = [];
-
-//     data.forEach((item, i) => {
-//       if (i === 0) {
-//         tempData.push(item);
-//       } else if (
-//         Math.abs(
-//           x(new Date(data[i - 1].createdAt)) - x(new Date(item.createdAt))
-//         ) < 6
-//       ) {
-//         tempData.push(item);
-//       } else {
-//         mergedData.push(tempData);
-//         tempData = [item];
-//       }
-//     });
-
-//     mergedData.push(tempData);
-//     return mergedData;
-//   };
-
-//   const mergedData = mergeOverlappingDots(data.data.user[0].timeline);
-
-//   const colorScale = d3
-//     .scaleLinear()
-//     .domain([0, d3.max(data.data.user[0].timeline, (d) => d.amount)])
-//     .range(["#3366cc", "#cc3366"]);
-
-//   svg
-//     .selectAll(".dot")
-//     .data(mergedData)
-//     .enter()
-//     .append("circle")
-//     .attr("class", "dot")
-//     .attr("r", (d) => 5)
-//     .attr("cx", (d) => x(new Date(d[0].createdAt)))
-//     .attr("cy", height)
-//     .attr("fill", (d) => colorScale(d[0].amount)) // Fill dots with color based on amount
-//     .on("mouseover", function (event, d) {
-//       tooltip.transition().duration(200).style("opacity", 0.9);
-
-//       let tooltipHtml = "";
-
-//       // Group projects by date
-//       let dateGroupedProjects = d.reduce((group, project) => {
-//         let date = d3.timeFormat("%B %d, %Y")(new Date(project.createdAt));
-//         if (!group[date]) group[date] = [];
-//         group[date].push(project);
-//         return group;
-//       }, {});
-
-//       // Generate tooltip HTML
-
-//       for (let date in dateGroupedProjects) {
-//         tooltipHtml += `${date}<br/>`;
-//         tooltipHtml += dateGroupedProjects[date]
-//           .map(
-//             (project) =>
-//               `${project.path.split("/").pop()}<br/>${convertToByteUnits(
-//                 project.amount
-//               )}` // Display project name and XP
-//           )
-//           .join("<br/>");
-//         tooltipHtml += "<br/>";
-//       }
-
-//       tooltip
-//         .html(tooltipHtml)
-//         .style("left", event.pageX + "px")
-//         .style("top", event.pageY - 28 + "px");
-//     })
-
-//     .on("mouseout", function (d) {
-//       tooltip.transition().duration(500).style("opacity", 0);
-//     });
-// }
-
-export function createTimeline(data) {
-  console.log("Creating timeline...");
-
-  // Remove the previous timeline
-  const timelineContainer = document.getElementById("timeline-container");
-  timelineContainer.innerHTML = '';
-
-  // Sort the timeline data by date
-  data.data.user[0].timeline.sort(
-    (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-  );
-  // data = data.data.user[0].timeline.filter(item =>
-  //   item.path.startsWith('/bahrain/bh-module/') && item.path !== '/bahrain/bh-module/checkpoint'
-  // );
-  // numberOfPaths = filteredData.length;
-  // tempDataPath = filteredData;
-
-  // Create a div for each project
-  data.data.user[0].timeline.forEach(project => {
-    const projectDiv = document.createElement('div');
-    projectDiv.className = 'project-item';
-
-    const projectName = document.createElement('span');
-    projectName.textContent = project.path.split('/').pop(); // Get the last part of the path as the project name
-
-    const projectButton = document.createElement('button');
-    projectButton.textContent = project.path.includes('checkpoint') ? 'Checkpoint' : 'Project';
-    projectButton.className = project.path.includes('checkpoint') ? 'checkpoint-btn' : 'project-btn';
-
-    const projectXP = document.createElement('span');
-    projectXP.textContent = `XP: ${convertToByteUnits(project.amount)}`;
-
-    const projectDate = document.createElement('span');
-    projectDate.textContent = new Date(project.createdAt).toLocaleDateString();
-
-    projectDiv.appendChild(projectName);
-    projectDiv.appendChild(projectButton);
-    projectDiv.appendChild(projectXP);
-    projectDiv.appendChild(projectDate);
-
-    timelineContainer.appendChild(projectDiv);
-  });
-}
 
 // Display the user XP and XP ratio in the DOM and generate the XP graph
 export function displayUserXp(upAmount, downAmount) {
@@ -436,8 +192,6 @@ export function displayUserXp(upAmount, downAmount) {
     xpRatioElement.innerHTML = '';
 
     const width = 250; // increased width
-    // const rect = xpRatioElement.getBoundingClientRect();
-    // const width = rect.width; // Use the full width of the xpRatio element
     const height = 100; // increased height
     const margin = { top: 40, right: 40, bottom: 50, left: 100 }; // increased margins
 
@@ -503,12 +257,6 @@ export function displayUserXp(upAmount, downAmount) {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("text-decoration", "underline");
-    // .text("XP Ratio");
-
-    // Display the audit ratio
-    // const auditRatioElement = document.createElement('p');
-    // auditRatioElement.textContent = `Audit Ratio: ${auditRatio.toFixed(2)}`;
-    // xpRatioElement.appendChild(auditRatioElement);
   }
 
   let xpRatioElementtxt = document.getElementById("display-ratio");
@@ -516,17 +264,6 @@ export function displayUserXp(upAmount, downAmount) {
     xpRatioElementtxt.textContent = `Audit Ratio: ${auditRatio.toFixed(2)}`;
   }
 
-  // Display the user given XP
-  let upXpValueElement = document.getElementById("upXpValue");
-  if (upXpValueElement) {
-    upXpValueElement.textContent = "Up XP: " + convertToByteUnits(upAmount);
-  }
-
-  // Display the user received XP
-  let downXpValueElement = document.getElementById("downXpValue");
-  if (downXpValueElement) {
-    downXpValueElement.textContent = "Down XP: " + convertToByteUnits(downAmount);
-  }
 
   const totalXP = upAmount + downAmount;
   const upXp = document.getElementById("upXp");
@@ -550,56 +287,20 @@ export async function displayUserInfo(user) {
   // Set the title of the page to the username of the user
   document.title = `${user.login}s Profile`;
 
-  // Set the user image
-  let imageElement = document.getElementById("user-image");
-  if (imageElement) {
-    imageElement.src = user.attrs.image;
-  }
-
-  // Set the user name
-  let nameProfileElement = document.getElementById("name-profile");
-  if (nameProfileElement) {
-    nameProfileElement.textContent = `${user.login}'s Profile`;
-  }
-
-  // Set the user phone number
-  let phoneElement = document.getElementById("phone");
-  if (phoneElement) {
-    phoneElement.textContent = `${user.attrs.PhoneNumber}`;
-  }
-
-  // Set the user email
-  let emailElement = document.getElementById("email");
-  if (emailElement) {
-    emailElement.textContent = `${user.attrs.email}`;
-  }
 
   // Set the user first name and last name
   let firstNameLastNameElement = document.getElementById("first-name-last-name");
   if (firstNameLastNameElement) {
-    firstNameLastNameElement.textContent = ` ${user.attrs.firstName} ${user.attrs.lastName}`;
+    firstNameLastNameElement.textContent = `Welcome, ${user.attrs.firstName} ${user.attrs.lastName}!`;
   }
 
   // Set the user first name and last name
   let LoginInUserElement = document.getElementById("wlcoming");
   if (LoginInUserElement) {
-    LoginInUserElement.textContent = `Welcome ${user.login}!`;
+    LoginInUserElement.textContent = `${user.login}`;
   }
 
-  // Set the user campus
-  let campusElement = document.getElementById("campus");
-  if (campusElement) {
-    //     const totalXp = user.xpAmount.aggregate.sum.amount;
-    // const level = calculateLevel(totalXp);
-    campusElement.textContent = ` ${user.xpAmount.aggregate.sum.amount} at ${user.campus}`;
 
-  }
-
-  // Set the user age and country
-  let fromElement = document.getElementById("from");
-  if (fromElement) {
-    fromElement.textContent = `${calculateAge(user.attrs.dateOfBirth)} Years old from ${user.attrs.country}`;
-  }
 
   const userLevel = await fetchUserLevel(user.login);
   console.log("User level2:", userLevel);
@@ -612,99 +313,8 @@ export async function displayUserInfo(user) {
   }
 }
 
-// Define your skill data
-// export const skillData = [
-//   { skill: "prog", value: 70 },
-//   { skill: "algo", value: 60 },
-//   { skill: "sys-admin", value: 50 },
-//   { skill: "front-end", value: 40 },
-//   { skill: "back-end", value: 60 },
-//   { skill: "stats", value: 50 },
-//   { skill: "ai", value: 30 },
-//   { skill: "game", value: 20 },
-//   { skill: "tcp", value: 50 }
-// ];
 
-// export const languageData = [
-//   { skill: "go", value: 80 },
-//   { skill: "js", value: 70 },
-//   { skill: "html", value: 60 },
-//   { skill: "css", value: 50 },
-//   { skill: "unix", value: 40 },
-//   { skill: "docker", value: 30 },
-//   { skill: "sql", value: 70 },
-//   { skill: "c", value: 50 },
-//   { skill: "ruby", value: 60 },
-//   { skill: "rails", value: 40 }
-// ];
 
-export async function fetchSkillData() {
-  try {
-    const response = await fetch(Alphabet.A + 'api/graphql-engine/v1/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-      },
-      body: JSON.stringify({ query: Alphabet.J }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok && data.data && data.data.transaction) {
-      const skillMap = new Map();
-      const languageMap = new Map();
-      // console.log(data.data.transaction);
-
-      // Group skills by name and sum their values
-      data.data.transaction.forEach(({ type, amount }) => {
-        const skillName = type.replace(/^.*skill_/, '');
-        if (isProgrammingLanguage(skillName)) {
-          const existingValue = languageMap.get(skillName) || 0;
-          if (existingValue > amount) {
-            amount = existingValue;
-          }
-          languageMap.set(skillName, amount);
-        } else {
-          const existingValue = skillMap.get(skillName) || 0;
-          if (existingValue > amount) {
-            amount = existingValue;
-          }
-          skillMap.set(skillName, amount);
-        }
-      });
-
-      // Convert the Map to an array of objects
-      return {
-        skills: Array.from(skillMap.entries()).map(([skill, value]) => ({ skill, value })),
-        languages: Array.from(languageMap.entries()).map(([skill, value]) => ({ skill, value }))
-      };
-    } else {
-      throw new Error(`GraphQL error: ${data.errors ? data.errors[0].message : 'Unknown error'}`);
-    }
-  } catch (error) {
-    console.error('Error fetching skills:', error);
-    return { skills: [], languages: [] };
-  }
-}
-
-/**
-Go
-Js
-Html
-Css
-Unix
-Docker
-Sql
-C
-Ruby
-Rails
-*/
-
-function isProgrammingLanguage(skillName) {
-  const programmingLanguages = ['go', 'js', 'html', 'css', 'unix', 'docker', 'sql', 'c', 'ruby', 'rails', 'java'];
-  return programmingLanguages.includes(skillName);
-}
 
 export async function mySkills() {
   const { skills, languages } = await fetchSkillData();
@@ -720,7 +330,7 @@ export function displayRadarChart(data, containerId) {
 
   const width = 220;
   const height = 220;
-  const radius = Math.min(width, height) / 2-10;
+  const radius = Math.min(width, height) / 2 - 10;
 
   const color = d3.scaleOrdinal().range(['#B19CD9']);
 
@@ -831,55 +441,6 @@ export function displayRadarChart(data, containerId) {
   // }
 }
 
-export async function fetchUserLevel(userLogin) {
-  console.log("Fetching user level...");
-  try {
-    const response = await fetch(Alphabet.A + "api/graphql-engine/v1/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({
-        query: Alphabet.H,
-        variables: { userlogin: userLogin },
-      }),
-    });
-
-    const data = await response.json();
-    console.log("Data:", data);
-    if (response.ok) {
-      const userLevel = data.data.event_user[0].level;
-      console.log("User level:", userLevel);
-      return userLevel;
-    } else {
-      throw new Error(`GraphQL error: ${data.errors[0].message}`);
-    }
-  } catch (error) {
-    console.error("Error fetching user level:", error);
-    return null; // Return null in case of an error
-  }
-}
-
-export function calculateAge(dateOfBirthStr) {
-  const dob = new Date(dateOfBirthStr);
-  const diffMs = Date.now() - dob.getTime();
-  const ageDate = new Date(diffMs); // milliseconds from epoch
-  return Math.abs(ageDate.getUTCFullYear() - 1970); // subtract 1970 to get the age in years
-}
-
-export function convertToByteUnits(num) {
-  const units = ["bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  let i = 0;
-  while (num >= 1000 && i < units.length - 1) {
-    num /= 1000;
-    i++;
-  }
-  // remove decimals and round up to nearest integer
-  num = Math.round(num);
-  return `${num} ${units[i]}`;
-}
-
 export async function createGraph(VAriableName, query) {
   let tempDataPath = []
   let numberOfPaths = 0;
@@ -969,13 +530,6 @@ export async function createGraph(VAriableName, query) {
     totalAmount += item.amount;
   });
 
-  // Prepare data for the chart
-  // let chartData = {
-  //   labels: tempDataPath.map(item => item.path.replace('/bahrain/bh-module/', '')),
-  //   datasets: [{
-  //     data: tempDataPath.map(item => item.amount),
-  //   }]
-  // };
 
   console.log(tempDataPath);
 
@@ -984,39 +538,7 @@ export async function createGraph(VAriableName, query) {
   const chart = document.getElementById("doughnut");
   const eventList = document.querySelector(".chart ul");
 
-  // new Chart(chart, {
-  //   type: 'doughnut',
-  //   data: chartData,
-  //   options: {
-  //     responsive: true,
-  //     plugins: {
-  //       legend: {
-  //         display: true,
-  //         labels: {
-  //           color: "#8b8a96",
-  //           font: {
-  //             size: 12,
-  //             weight: 600,
-  //           },
-  //         },
-  //       },
-  //     },
-  //     layout: {
-  //       padding: {
-  //         bottom: 10,
-  //       },
-  //     },
-  //   },
-  // });
-  // function population() {
-  //   chartData.labels.forEach((label, i) => {
-  //     let eachEvent = document.createElement("li");
-  //     eachEvent.innerHTML = `${label}: <span class="percentage">${chartData[i].amount}/totalAmount*100%</span> `;
-  //     eventList.appendChild(eachEvent);
-  //   });
-  // }
 
-  // population();
 
   console.log('tempDataPath:', tempDataPath);
 
@@ -1238,115 +760,82 @@ export function displayUserLevel(level) {
   }
 }
 
-export function calculateLevel(xp) {
-  const levels = [
-    { xp: 0, level: 0 },
-    { xp: 1000, level: 1 },
-    { xp: 2000, level: 2 },
-    { xp: 3000, level: 3 },
-    // Add more level thresholds as needed
-  ];
+// export function calculateLevel(xp) {
+//   const levels = [
+//     { xp: 0, level: 0 },
+//     { xp: 1000, level: 1 },
+//     { xp: 2000, level: 2 },
+//     { xp: 3000, level: 3 },
+//     // Add more level thresholds as needed
+//   ];
 
-  for (let i = levels.length - 1; i >= 0; i--) {
-    if (xp >= levels[i].xp) {
-      return levels[i].level;
-    }
-  }
+//   for (let i = levels.length - 1; i >= 0; i--) {
+//     if (xp >= levels[i].xp) {
+//       return levels[i].level;
+//     }
+//   }
 
-  return 0;
-}
+//   return 0;
+// }
 
-// Random color generator
-export function getRandomColor() {
-  let letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
-export async function fetchFailedAudits(VAriableName) {
-  try {
-    const response = await fetch(Alphabet.A + "api/graphql-engine/v1/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${VAriableName}`,
-      },
-      body: JSON.stringify({ query: Alphabet.E }),
-    });
-    const data = await response.json();
-    console.log("Failed Audits:", data.data);
-    return data.data.audit_aggregate.aggregate.count;
-  } catch (error) {
-    console.error("Error fetching failed audits:", error);
-    return 0;
-  }
-}
-
-export async function fetchPassedAudits(VAriableName) {
-  try {
-    const response = await fetch(Alphabet.A + "api/graphql-engine/v1/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${VAriableName}`,
-      },
-      body: JSON.stringify({ query: Alphabet.F }),
-    });
-    const data = await response.json();
-    return data.data.audit_aggregate.aggregate.count;
-  } catch (error) {
-    console.error("Error fetching passed audits:", error);
-    return 0;
-  }
-}
+// 
 
 
 
-{/* <div className="flex-min-h-screen">
-<h1 id="name-profile" className="my-4">Profile</h1>
-<section className="profile-info">
-  <h2 id="first-name-last-name" className="my-4">Name</h2>
-  <p id="email" className="my-4">Email</p>
-  <p id="from" className="my-4">From</p>
-  <p id="phone" className="my-4">Phone</p>
-</section>
-<section className="profile-info">
-  <div id="text-info">
-    <h3 id="campus">Campus</h3>
-  </div>
-</section>
-<section className="profile-info">
-  <p id="total-xp">total xp</p>
-</section>
-<section className="profile-info">
-  <div className="user-image-container">
-    <img alt="User Image" id="user-image" />
-  </div>
-</section>
-<section className="statistics">
-  <h2>Statistics</h2>
-  <div className="xp-widget">
-    <div className="xp-container">
-      <div className="xp-ratio-display" id="xpRatio"></div>
-      <div className="xp-values-display">
-        <div className="xp-value">
-          <p className="xp-value-label" id="upXpValue">Up XP:</p>
-        </div>
-        <div className="xp-value">
-          <p className="xp-value-label" id="downXpValue">Down XP:</p>
-        </div>
-      </div>
-      <div className="xp-visualization">
-        <svg className="xp-svg" viewBox="0 0 100 20" preserveAspectRatio="none">
-          <rect className="xp-bar xp-up" id="upXp" x="0" y="0" width="50" height="20"></rect>
-          <rect className="xp-bar xp-down" id="downXp" x="50" y="0" width="50" height="20"></rect>
-        </svg>
-      </div>
-    </div>
-  </div>
-</section>
-</div> */}
+// export function createTimeline(data) {
+//   console.log("Creating timeline...");
 
+//   // Remove the previous timeline
+//   const timelineContainer = document.getElementById("timeline-container");
+//   timelineContainer.innerHTML = '';
+
+//   // Sort the timeline data by date
+//   data.data.user[0].timeline.sort(
+//     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+//   );
+//   // Create a div for each project
+//   data.data.user[0].timeline.forEach(project => {
+//     const projectDiv = document.createElement('div');
+//     projectDiv.className = 'project-item';
+
+//     const projectName = document.createElement('span');
+//     projectName.textContent = project.path.split('/').pop(); // Get the last part of the path as the project name
+
+//     const projectButton = document.createElement('button');
+//     projectButton.textContent = project.path.includes('checkpoint') ? 'Checkpoint' : 'Project';
+//     projectButton.className = project.path.includes('checkpoint') ? 'checkpoint-btn' : 'project-btn';
+
+//     const projectXP = document.createElement('span');
+//     projectXP.textContent = `XP: ${convertToByteUnits(project.amount)}`;
+
+//     const projectDate = document.createElement('span');
+//     projectDate.textContent = new Date(project.createdAt).toLocaleDateString();
+
+//     projectDiv.appendChild(projectName);
+//     projectDiv.appendChild(projectButton);
+//     projectDiv.appendChild(projectXP);
+//     projectDiv.appendChild(projectDate);
+
+//     timelineContainer.appendChild(projectDiv);
+//   });
+// }
+
+
+// export function calculateAge(dateOfBirthStr) {
+//   const dob = new Date(dateOfBirthStr);
+//   const diffMs = Date.now() - dob.getTime();
+//   const ageDate = new Date(diffMs); // milliseconds from epoch
+//   return Math.abs(ageDate.getUTCFullYear() - 1970); // subtract 1970 to get the age in years
+// }
+
+// export function convertToByteUnits(num) {
+//   const units = ["bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+//   let i = 0;
+//   while (num >= 1000 && i < units.length - 1) {
+//     num /= 1000;
+//     i++;
+//   }
+//   // remove decimals and round up to nearest integer
+//   num = Math.round(num);
+//   return `${num} ${units[i]}`;
+// }

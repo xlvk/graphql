@@ -1,5 +1,6 @@
 import Toastify from "toastify-js";
 import axios from "axios";
+import { Alphabet } from "../../funcs/MyAlphabet";
 
 export default async function Auth(event: any) {
     event.preventDefault();
@@ -11,7 +12,8 @@ export default async function Auth(event: any) {
     let email: string;
     let password: string;
 
-    let link = `https://learn.reboot01.com/api/auth/signin`
+    let link = Alphabet.A + `api/auth/signin`
+    // let link = `https://learn.reboot01.com//auth/signin`
 
 
     if (emailElement) {

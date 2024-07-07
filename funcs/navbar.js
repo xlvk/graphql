@@ -15,7 +15,7 @@ export const LoadNav = () => {
         <img
           src="${user}"
           alt="user" />
-        <p id="first-name-last-name"> id="first-name-last-name"</p>
+        <p id="wlcoming">User</p>
       </div>
       <ul>
         <li class="nav-item active">
@@ -25,12 +25,12 @@ export const LoadNav = () => {
           </a>
         </li>
 
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a href="graphiql">
             <i class="fa-solid fa-chart-simple nav-icon"></i>
             <span class="nav-text">Analytics</span>
           </a>
-        </li>
+        </li> -->
 
         <!-- <li class="nav-item">
           <a href="#">

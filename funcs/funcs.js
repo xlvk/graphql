@@ -8,12 +8,46 @@
  */
 
 export const UpdateCSS = (stylesheet) => {
-    const linkElement = document.getElementById("page-styles");
-    if (linkElement) {
-      linkElement.href = stylesheet;
-      const styleTags = document.querySelectorAll("style");
-      styleTags.forEach((tag) => tag.remove());
-    } else {
-      console.error("Page stylesheet link not found");
-    }
-  };
+  const linkElement = document.getElementById("page-styles");
+  if (linkElement) {
+    linkElement.href = stylesheet;
+    const styleTags = document.querySelectorAll("style");
+    styleTags.forEach((tag) => tag.remove());
+  } else {
+    console.error("Page stylesheet link not found");
+  }
+};
+
+/**
+ * 
+ * a function that checks if the skill name is a programming language or not.
+ * Go
+ * Js
+ * Html
+ * Css
+ * Unix
+ * Docker
+ * Sql
+ * C
+ * Ruby
+ * Rails
+*/
+
+export function isProgrammingLanguage(skillName) {
+  const programmingLanguages = ['go', 'js', 'html', 'css', 'unix', 'docker', 'sql', 'c', 'ruby', 'rails', 'java'];
+  return programmingLanguages.includes(skillName);
+}
+
+/**
+ * a function that returns a random color for the graphs values
+ * Random color generator
+ */
+
+export function getRandomColor() {
+  let letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}

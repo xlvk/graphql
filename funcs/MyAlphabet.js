@@ -119,10 +119,18 @@ export const Alphabet = {
   }
   `,
   /**
-   *  src url for the chart.js library
+   *  Get all the projects that are not done
    */
   I: `
-  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  query Progress {
+    progress(
+      where: { isDone: { _eq: false }, object: { type: { _eq: "project" } } }
+    ) {
+      object {
+        name
+      }
+    }
+  }
   `,
 /**
  * Get every skill and their amount (for radial graph)
