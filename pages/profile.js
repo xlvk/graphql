@@ -54,13 +54,19 @@ export const Profile = async () => {
             </p>
           </div>
 
-          <div class="card review-card graph">
+          <!-- <div class="card review-card graph">
             <h2>The TimeLine:</h2>
             <script src="https://d3js.org/d3.v7.min.js" async></script>
             <div id="timeline-container">
               <svg id="timeline"></svg>
             </div>
-          </div>
+          </div> -->
+            <div class="card review-card graph">
+              <h2>Audit Performance:</h2>
+              <div id="audit-container">
+                <svg id="myAudits"></svg>
+              </div>
+            </div>
           <!-- <div class="auto"> -->
             <div class="card review-card graph">
               <h2>Skill Performance:</h2>
@@ -72,12 +78,6 @@ export const Profile = async () => {
               <h2>Language Performance:</h2>
               <div id="language-container">
                 <svg id="mySkill"></svg>
-              </div>
-            </div>
-            <div class="card review-card graph">
-              <h2>Audit Performance:</h2>
-              <div id="audit-container">
-                <svg id="myAudits"></svg>
               </div>
             </div>
           <!-- </div> -->
@@ -426,11 +426,12 @@ export function createTimeline(data) {
 export function displayUserXp(upAmount, downAmount) {
   console.log("Displaying user xp...");
 
+  // calculate the audit ratio.
+  const auditRatio = (upAmount / downAmount);
+
   // Display the user XP ratio
   let xpRatioElement = document.getElementById("xpRatio");
   if (xpRatioElement) {
-    const auditRatio = (upAmount / downAmount);
-
     // Remove any existing canvas or SVG elements
     xpRatioElement.innerHTML = '';
 
@@ -510,9 +511,9 @@ export function displayUserXp(upAmount, downAmount) {
     // xpRatioElement.appendChild(auditRatioElement);
   }
 
-  let xpRatioElementtxt = document.getElementById("disply-ratio");
+  let xpRatioElementtxt = document.getElementById("display-ratio");
   if (xpRatioElementtxt) {
-    xpRatioElement.textContent = `Audit Ratio: ${auditRatio.toFixed(2)}`;
+    xpRatioElementtxt.textContent = `Audit Ratio: ${auditRatio.toFixed(2)}`;
   }
 
   // Display the user given XP
@@ -719,7 +720,7 @@ export function displayRadarChart(data, containerId) {
 
   const width = 220;
   const height = 220;
-  const radius = Math.min(width, height) / 2;
+  const radius = Math.min(width, height) / 2-10;
 
   const color = d3.scaleOrdinal().range(['#B19CD9']);
 
@@ -777,11 +778,11 @@ export function displayRadarChart(data, containerId) {
     .append('text')
     .attr('text-anchor', 'middle')
     .attr('dy', '0.35em')
-    .attr('x', (d, i) => rScale(100) * Math.cos(angleSlice * i - Math.PI / 2))
-    .attr('y', (d, i) => rScale(100) * Math.sin(angleSlice * i - Math.PI / 2))
+    .attr('x', (d, i) => rScale(100) * Math.cos(angleSlice * i - Math.PI / 2) + 5)
+    .attr('y', (d, i) => rScale(100) * Math.sin(angleSlice * i - Math.PI / 2) - 5)
     .text((d) => d.skill)
     .style('font-size', '14px')
-    .style('fill', '#000');
+    .style('fill', 'rgb(177, 156, 217)');
 
   // Draw the radar area
   const radarLine = d3.radialLine()
@@ -815,19 +816,19 @@ export function displayRadarChart(data, containerId) {
     .attr('cy', (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2));
 
   // Add more circles to ensure no dot is out of the graph
-  const numCircles = 10; // Adjust the number of circles as needed
+  // const numCircles = 10; // Adjust the number of circles as needed
   // const maxValue = d3.max(data, d => d.value); // Get the maximum value from the data
-  const adjustedRadius = radius * (maxValue / 100); // Adjust radius based on max value
+  // const adjustedRadius = radius * (maxValue / 100); // Adjust radius based on max value
 
-  for (let i = 1; i <= numCircles; i++) {
-    svg.append("circle")
-      .attr("r", (adjustedRadius / numCircles) * i)
-      .attr("cx", 0)
-      .attr("cy", 0)
-      .style("fill", "none")
-      .style("stroke", "#CDCDCD")
-      .style("stroke-dasharray", "2,2");
-  }
+  // for (let i = 1; i <= numCircles; i++) {
+  //   svg.append("circle")
+  //     .attr("r", (adjustedRadius / numCircles) * i)
+  //     .attr("cx", 0)
+  //     .attr("cy", 0)
+  //     .style("fill", "none")
+  //     .style("stroke", "#CDCDCD")
+  //     .style("stroke-dasharray", "2,2");
+  // }
 }
 
 export async function fetchUserLevel(userLogin) {
@@ -922,13 +923,13 @@ export async function createGraph(VAriableName, query) {
     if (lastSubmitProject) {
       // Sort the tempDataPath array by createdAt date in ascending order
       tempDataPath.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-      
+
       // Get the latest entry
       const latestEntry = tempDataPath[tempDataPath.length - 1];
 
       const cleanedPath = latestEntry.path.replace('/bahrain/bh-module/', '');
 
-      
+
       // Update the text content with the path of the latest entry
       lastSubmitProject.textContent = `${cleanedPath}`;
     }
