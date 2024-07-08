@@ -13,6 +13,10 @@
  * loaded and parsed, allowing the application to handle the initial routing state correctly.
  * 
  */
+import './css/index.css';
+import './css/profile.css';
+import './css/sign.css';
+import './root.css';
 import { ForumRouter } from "./funcs/router";
 
 window.addEventListener("popstate", ForumRouter);
