@@ -1,3 +1,54 @@
+/**
+ * This function fetches the profile page. It checks if the user is logged in, and if so, it loads the navigation bar and fetches various user data to display on the profile page, including:
+ * - The user's name and level
+ * - The user's last submitted project
+ * - The user's audit performance (passed and failed audits)
+ * - The user's skill and language performance
+ * - The user's project analytics (submitted projects, projects in progress)
+ * - A graph showing the user's XP ratio
+ * - A doughnut chart showing the XP per project
+ */
+/**
+ * This function fetches the profile page. It checks if the user is logged in, and if so, it loads the navigation bar and fetches various user data to display on the profile page, including:
+ * - The user's name
+ * - The user's last submitted project
+ * - The user's audit performance
+ * - The user's XP ratio
+ * - The user's skill and language performance
+ * - The user's submitted and in-progress projects
+ * 
+ * The function also creates various charts and graphs to visualize the user's data.
+ */
+/**
+ * This function fetches the profile page. It checks if the user is logged in, and if so, it loads the navigation bar and fetches various user data to display on the profile page, including:
+ * - The user's name and level
+ * - The user's last submitted project
+ * - The user's audit performance (passed and failed audits)
+ * - The user's skill and language performance
+ * - The user's project analytics (submitted projects, projects in progress)
+ * - A graph displaying the user's XP ratio
+ * - A doughnut chart displaying the user's XP per project
+ */
+/**
+ * This function fetches the profile page. It checks if the user is logged in, and if so, it loads the navigation bar and fetches various user data to display on the profile page, including:
+ * - The user's name and level
+ * - The user's last submitted project
+ * - The user's audit performance (passed and failed audits)
+ * - The user's skill and language performance
+ * - The user's project analytics (submitted projects, projects in progress)
+ * - A graph showing the user's XP ratio
+ * - A doughnut chart showing the XP per project
+ */
+/**
+ * This function fetches the profile page. It checks if the user is logged in, and if so, it loads the navigation bar and fetches various user data to display on the profile page, including:
+ * - The user's name and level
+ * - The user's last submitted project
+ * - The user's audit performance (passed and failed audits)
+ * - The user's skill and language performance
+ * - The user's project analytics (submitted projects, projects in progress)
+ * - A graph showing the user's XP ratio
+ * - A doughnut chart showing the XP per project
+ */
 import { LoadNav, navBarItems } from "../funcs/navbar";
 import * as d3 from 'd3';
 import { Alphabet } from "../funcs/MyAlphabet";
@@ -759,83 +810,3 @@ export function displayUserLevel(level) {
     return `Level ${level}`;
   }
 }
-
-// export function calculateLevel(xp) {
-//   const levels = [
-//     { xp: 0, level: 0 },
-//     { xp: 1000, level: 1 },
-//     { xp: 2000, level: 2 },
-//     { xp: 3000, level: 3 },
-//     // Add more level thresholds as needed
-//   ];
-
-//   for (let i = levels.length - 1; i >= 0; i--) {
-//     if (xp >= levels[i].xp) {
-//       return levels[i].level;
-//     }
-//   }
-
-//   return 0;
-// }
-
-// 
-
-
-
-// export function createTimeline(data) {
-//   console.log("Creating timeline...");
-
-//   // Remove the previous timeline
-//   const timelineContainer = document.getElementById("timeline-container");
-//   timelineContainer.innerHTML = '';
-
-//   // Sort the timeline data by date
-//   data.data.user[0].timeline.sort(
-//     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-//   );
-//   // Create a div for each project
-//   data.data.user[0].timeline.forEach(project => {
-//     const projectDiv = document.createElement('div');
-//     projectDiv.className = 'project-item';
-
-//     const projectName = document.createElement('span');
-//     projectName.textContent = project.path.split('/').pop(); // Get the last part of the path as the project name
-
-//     const projectButton = document.createElement('button');
-//     projectButton.textContent = project.path.includes('checkpoint') ? 'Checkpoint' : 'Project';
-//     projectButton.className = project.path.includes('checkpoint') ? 'checkpoint-btn' : 'project-btn';
-
-//     const projectXP = document.createElement('span');
-//     projectXP.textContent = `XP: ${convertToByteUnits(project.amount)}`;
-
-//     const projectDate = document.createElement('span');
-//     projectDate.textContent = new Date(project.createdAt).toLocaleDateString();
-
-//     projectDiv.appendChild(projectName);
-//     projectDiv.appendChild(projectButton);
-//     projectDiv.appendChild(projectXP);
-//     projectDiv.appendChild(projectDate);
-
-//     timelineContainer.appendChild(projectDiv);
-//   });
-// }
-
-
-// export function calculateAge(dateOfBirthStr) {
-//   const dob = new Date(dateOfBirthStr);
-//   const diffMs = Date.now() - dob.getTime();
-//   const ageDate = new Date(diffMs); // milliseconds from epoch
-//   return Math.abs(ageDate.getUTCFullYear() - 1970); // subtract 1970 to get the age in years
-// }
-
-// export function convertToByteUnits(num) {
-//   const units = ["bytes", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-//   let i = 0;
-//   while (num >= 1000 && i < units.length - 1) {
-//     num /= 1000;
-//     i++;
-//   }
-//   // remove decimals and round up to nearest integer
-//   num = Math.round(num);
-//   return `${num} ${units[i]}`;
-// }
