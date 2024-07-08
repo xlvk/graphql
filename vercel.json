@@ -3,7 +3,7 @@
   "name": "graphql-front",
   "builds": [
     {
-      "src": "vite.config.js",
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
         "distDir": "dist"
@@ -15,8 +15,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "scripts": {
-    "build": "vite build"
-  }
+  ]
 }
