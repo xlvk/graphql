@@ -15,5 +15,9 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "scripts": {
+    "build": "npm run build",
+    "start": "vite preview --port $PORT"
+  }
 }
