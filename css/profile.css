@@ -1050,7 +1050,8 @@ body::-webkit-scrollbar-thumb {
   margin-right: 10px;
 }
 
-.checkpoint-btn, .project-btn {
+.checkpoint-btn,
+.project-btn {
   padding: 5px 10px;
   border: none;
   border-radius: 3px;
